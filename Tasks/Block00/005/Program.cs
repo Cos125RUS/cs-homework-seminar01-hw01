@@ -3,10 +3,9 @@
 int a;
 double y;
 
-Console.Write("x = ");
-x = Convert.ToInt32(Console.ReadLine());
+Console.Write("a = ");
+a = Convert.ToInt32(Console.ReadLine());
 
-y = Sin(a + Cos(1/a));
+y = Math.Sin(a + Math.Cos(1/a));
 
-Console.Write("y = ");
-Console.WriteLine(y);
+Console.Write("y = "+y);
