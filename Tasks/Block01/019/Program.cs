@@ -4,7 +4,7 @@ int Coordinate()
 {
     int x = Random.Shared.Next(-9, 10);
     while (x == 0) x = Random.Shared.Next(-9, 10);
-    Console.WriteLine(x+"   ");
+    Console.WriteLine(x);
     return x;
 }
 
