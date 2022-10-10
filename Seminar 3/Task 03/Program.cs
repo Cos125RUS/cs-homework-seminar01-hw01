@@ -6,11 +6,11 @@
 void Cube(int n)
 {
     double[] cube = new double[n];
-
+    Console.Write(n + " -> ");
     for (int i = 0; i < n; i++)
     {
         cube[i] = Math.Pow((i + 1), 3);
-        Console.WriteLine((i + 1) + "^3 = " + cube[i]);
+        Console.Write(cube[i]+", ");
     }
 }
 
