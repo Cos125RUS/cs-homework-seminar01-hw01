@@ -1,6 +1,6 @@
 ﻿// Написать программу преобразования десятичного числа в двоичное
 
-void Converter(int n)
+string Converter(int n)
 {
     int degree = 0;
     while (Math.Pow(2, degree) <= n)
@@ -16,16 +16,16 @@ void Converter(int n)
         array[i] = n % 2;
         n /= 2;
     }
+    // Console.Write("Binary number = ");
+    // System.Console.WriteLine(String.Join("", array));
 
-    System.Console.WriteLine(String.Join("", array));
-
-    // string findNumber = Convert.ToString(array);
-    // return findNumber;
+    string findNumber = string.Join("",array);
+    return findNumber;
 }
 
 Console.Write("Enter the number = ");
 int decimalNumber = Convert.ToInt32(Console.ReadLine());
-Converter(decimalNumber);
+string binaryNumber = Converter(decimalNumber);
 
-// Console.WriteLine();
-// Console.WriteLine(Converter(decimalNumber));
+//Console.WriteLine();
+Console.WriteLine("Binary number = " + binaryNumber);
