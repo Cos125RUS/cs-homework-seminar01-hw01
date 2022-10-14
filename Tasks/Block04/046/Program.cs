@@ -25,9 +25,9 @@ void Converter(string s, double[] array, int n)
     comma = s.Split(',');
     int j = 0;
 
-    for (int i = 0; i <= n ; i++)
+    for (int i = 0; i <= n; i++)
     {
-        if (i != 0 && i != n )
+        if (i != 0 && i != n)
         {
             left = comma[i].Split(')');
             array[j] = Convert.ToDouble(left[0]);
@@ -58,10 +58,12 @@ void Converter(string s, double[] array, int n)
 
 void Scaling(double[] array, double k, int n)
 {
+    // System.Console.WriteLine(String.Join(' ', array));
     for (int i = 0; i < n * 2; i++)
     {
         array[i] *= k;
     }
+    // System.Console.WriteLine(String.Join(' ', array));
 }
 
 void Print(double[] array, int n)
@@ -81,7 +83,7 @@ do
 {
     Console.Write("k = ");
     k = Convert.ToDouble(Console.ReadLine());
-    Console.WriteLine(k);
+    // Console.WriteLine(k);
     if (k < 0) Console.WriteLine("Error! Try again");
 } while (k < 0);
 
