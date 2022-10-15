@@ -10,13 +10,13 @@
 
 int Counter(string s)
 {
-    int count = 0;
+    int counter = 0;
 
     for (int i = 0; i < s.Length; i++)
     {
-        if (s[i] == ',') count++;
+        if (s[i] == ',') counter++;
     }
-    return count;
+    return counter;
 }
 
 void Converter(string s, double[] array, int n)
