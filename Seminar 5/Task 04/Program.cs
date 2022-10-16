@@ -1,4 +1,7 @@
-﻿// Задать массив из 12 элементов, заполненных числами из [0,9]. Найти сумму положительных/отрицательных элементов массива
+﻿// Задайте массив из 12 элементов, заполненный случайными числами из промежутка [-9, 9]. 
+// Найдите сумму отрицательных и положительных элементов массива.
+// Например, в массиве [3,9,-8,1,0,-7,2,-1,8,-3,-1,6] сумма положительных чисел равна 29, сумма отрицательных равна -20.
+
 
 int[] Creation(int size)
 {
@@ -35,5 +38,6 @@ int Summation(int[] array, int size, int determinant)
 int size = 12;
 int[] array = Creation(size);
 
-Console.WriteLine("Sum of positive elements = " + Summation(array, size, 1));
+Console.WriteLine("Sum of positive elements =  " + Summation(array, size, 1));
 Console.WriteLine("Sum of negative elements = -" + Summation(array, size, -1));
+
