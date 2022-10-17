@@ -4,22 +4,20 @@
 int EnterTheDot(string s)
 {
     Console.Write(s + " = ");
-    int dot = Random.Shared.Next(0, 10);
-    Console.WriteLine(dot);
+    int dot = Convert.ToInt32(Console.ReadLine());    
     return dot;
 }
 
 double FindX(int k1, int k2, int b1, int b2)
 {
-    double x = (b2 - b1) / (k1 - k2);
-    //Console.WriteLine("x = " + x);
+    double x = b2 - b1;
+    x = x / (k1 - k2);    
     return x;
 }
 
 double FindY(int k1, int b1, double x)
 {
-    double y = k1 * x + b1;
-    //Console.WriteLine("y = " + y);
+    double y = k1 * x + b1;    
     return y;
 }
 
