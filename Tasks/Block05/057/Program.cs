@@ -4,18 +4,14 @@ int[,] FillArray()
 {
     int n = new Random().Next(3, 9);
     int m = new Random().Next(3, 9);
-    // Console.WriteLine("n = " + n);
-    // Console.WriteLine("m = " + m);
-    // Console.WriteLine();
+    
     int[,] arr = new int[n, m];
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
         {
-            arr[i, j] = new Random().Next(0, 10);
-            // Console.Write($"{arr[i, j]}   ");
-        }
-        // Console.WriteLine();
+            arr[i, j] = new Random().Next(0, 10);            
+        }        
     }
     return arr;
 }
