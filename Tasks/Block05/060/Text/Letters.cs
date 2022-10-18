@@ -13,13 +13,23 @@ int[] Counting(string text, int size)
 void FrequencyAnalysis(int[] order, int[] pos, int count, int size)
 {
     char symbol;
-    double f;
+    string print;
+    double res;
+    int g;
 
     for (int i = 0; i < count; i++)
     {
-        f = order[i];
-        symbol = Convert.ToChar(pos[i]);
-        System.Console.WriteLine($"Symbol {symbol} met in text {order[i]} times. Frequency is {f / size * 100}%");
+        res = order[i] * 10000 / size;              
+        g = Convert.ToInt32(res);
+        res = Convert.ToDouble(g);
+        res /= 100;
+        if (pos[i] == 32) print = "space";
+        else
+        {
+            symbol = Convert.ToChar(pos[i]);
+            print = Convert.ToString(symbol);
+        }
+        System.Console.WriteLine($"Symbol {print} met in text {order[i]} times. Frequency is {res}%");
     }
 }
 
@@ -68,6 +78,7 @@ void FrequencyAnalysis(int[] order, int[] pos, int count, int size)
 }
 
 
+Console.Write("Enter the text: ");
 string text = Console.ReadLine();
 text = text.ToLower();
 
@@ -77,4 +88,4 @@ int[] freq = Counting(text, size);
 
 (int[] order, int[] pos, int count) = Sorting(freq);
 
-FrequencyAnalysis( order, pos, count, size);
+FrequencyAnalysis(order, pos, count, size);
