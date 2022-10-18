@@ -45,7 +45,7 @@ void PrintFrequency(int[] freq)
 {
     for (int i = 0; i < 10; i++)
     {
-        Console.WriteLine($"The number {i} occurs in the array - {freq[i]} times");
+        Console.WriteLine($"The number {i} met in the array - {freq[i]} times");
     }
 }
 
