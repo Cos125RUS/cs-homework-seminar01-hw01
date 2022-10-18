@@ -20,6 +20,10 @@ new Thread(() =>
 {
   while (true)
   {
+    Console.Clear();
+    Console.SetCursorPosition(0,13);
+
+    System.Console.Write("++++++++++++++++++++");
     Figure(x, y);
     Thread.Sleep(500);
     y++;
