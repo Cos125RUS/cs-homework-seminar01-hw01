@@ -1,18 +1,20 @@
 ﻿// Показать натуральные числа от 1 до N, N задано
 
-int Numbers(int n)
+void Numbers(int n, int m)
 {
-    if (n == 1) {
-        Console.WriteLine(1);
-        return 1;}
+    if (n == m)
+    {
+        System.Console.WriteLine(m);
+    }
     else
     {
-        Console.WriteLine(n);
-        return Numbers(n - 1);
+        System.Console.WriteLine(m);
+        Numbers(n, m + 1);
     }
 }
+
 
 Console.Write("N = ");
 int n = Convert.ToInt32(Console.ReadLine());
 System.Console.WriteLine();
-Numbers(n);
+Numbers(n, 1);
