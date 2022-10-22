@@ -62,10 +62,6 @@ int[,] Multiplication(int[,] first, int[,] second)
 }
 
 
-
-
-
-
 int[,] first_array = FillArray();
 int[,] second_array = FillArray();
 PrintArray(first_array);
