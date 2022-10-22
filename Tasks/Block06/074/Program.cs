@@ -3,71 +3,30 @@
 
 
 // 4^n вариантов
-string TheWords(char[] alphabet, int n, int size)
+void TheWords(char[] alphabet, int n, int size, char[] word)
 {
-    // if (size > 0) TheWords (alphabet, n, size - 1);
-    // if (size > 0)
-    // {
-    //     TheWords(alphabet, n, size - 1);
-
-    //     for (int i = 0; i < n; i++)
-    //     {
-    //         Console.Write(alphabet[size - 1]);
-    //     }
-    //     Console.Write(' ');
-    // }
-
-
-
-
-
-    // for (int i = 0; i < n; i++)
-    // {
-    //     TheWords(alphabet, n - 1, size);
-    //     Console.Write(alphabet[size - 1]);
-    // }
-    //     Console.Write(' ');
-
-
-
-    // if (n == 0) Console.WriteLine(' ');
-    // else
-    // {
-    //     Console.Write(alphabet[size - 1]);
-    //     TheWords(alphabet, n - 1, size);
-    // }
-
-
-
-    // if (size > 0)
-    // {
-    //     TheWords(alphabet, n, size - 1);
-
-    //     for (int i = 0; i < n; i++)
-    //     {
-    //         Console.Write(alphabet[size - 1]);
-    //     }
-    //     Console.Write(' ');
-    // }
-}
-
-string[] DrawingUpTheAlphabet(char[] words, int length, int alphabetSize, int arraySize)
-{
-    string [] dictionary = new string[arraySize];
-    for (int i = 0; i < arraySize; i++)
+    for (int i = 0; i < size; i++)
     {
-        dictionary[i] = TheWords()
+        if (n == 0)
+        {
+            System.Console.Write(String.Join("",word));
+            Console.Write(' ');
+        }
+        else
+        {
+            word[n - 1] = alphabet[i];
+            // Console.Write(alphabet[i]);
+            TheWords(alphabet, n - 1, size, word);
+        }
     }
 }
 
-int size = 4;
+const int size = 4;
 char[] machineAlphabet = { 'а', 'и', 'с', 'в' };
 
 Console.Write("n = ");
 int length = Convert.ToInt32(Console.ReadLine());
 
-// TheWords(machineAlphabet, length, size);
+char[] word = new char[length];
 
-double arraySize = Math.Pow(size, n);
-string [] dictionary = DrawingUpTheAlphabet(machineAlphabet, length, size, arraySize);
-
+TheWords(machineAlphabet, length, size, word);
