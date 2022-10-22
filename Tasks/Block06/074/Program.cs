@@ -5,17 +5,16 @@
 // 4^n вариантов
 void TheWords(char[] alphabet, int n, int size, char[] word)
 {
-    for (int i = 0; i < size; i++)
+    if (n == 0)
     {
-        if (n == 0)
-        {
-            System.Console.Write(String.Join("",word));
-            Console.Write(' ');
-        }
-        else
+        System.Console.Write(String.Join("", word));
+        Console.Write(' ');
+    }
+    else
+    {
+        for (int i = 0; i < size; i++)
         {
             word[n - 1] = alphabet[i];
-            // Console.Write(alphabet[i]);
             TheWords(alphabet, n - 1, size, word);
         }
     }
