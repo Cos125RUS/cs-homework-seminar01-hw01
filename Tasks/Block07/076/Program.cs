@@ -14,11 +14,11 @@
                 if (groups[j, k] > 0)
                 {
                     if (i % groups[j, k] == 0) k = n;
-                    else
-                    {
-                        // Полная проверка на взаимно простые числа
-                        if (CommonDivisor(i, groups[j, k]) > 1) k = n;
-                    }
+                    // else
+                    // {
+                    //     // Полная проверка на взаимно простые числа
+                    //     if (CommonDivisor(i, groups[j, k]) > 1) k = n;
+                    // }
                 }
                 else
                 {
