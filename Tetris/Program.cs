@@ -32,30 +32,22 @@ int[,] mapping = Copying();
 // Выбор следующей фигуры
 int[,] Choice(int n)
 {
-    int[,] shape1 = {{0,1,0,0},
-                     {1,1,0,0},
-                     {1,0,0,0},
-                     {0,0,0,0}};
+    int[,] shape1 = {{0,1},
+                     {1,1},
+                     {1,0}};
 
-    int[,] shape2 = {{1,0,0,0},
-                     {1,0,0,0},
-                     {1,0,0,0},
-                     {1,0,0,0}};
+    int[,] shape2 = { { 1, 1, 1, 1 } };
 
-    int[,] shape3 = {{1,0,0,0},
-                     {1,0,0,0},
-                     {1,1,0,0},
-                     {0,0,0,0}};
+    int[,] shape3 = {{1,0},
+                     {1,0},
+                     {1,1}};
 
-    int[,] shape4 = {{1,1,0,0},
-                     {1,1,0,0},
-                     {0,0,0,0},
-                     {0,0,0,0}};
+    int[,] shape4 = {{1,1},
+                     {1,1}};
 
-    int[,] shape5 = {{1,0,0,0},
-                     {1,1,0,0},
-                     {1,0,0,0},
-                     {0,0,0,0}};
+    int[,] shape5 = {{1,0},
+                     {1,1},
+                     {1,0}};
 
     switch (n)
     {
@@ -80,10 +72,12 @@ int[,] Choice(int n)
 int[,] Copying()
 {
     int[,] shape = Choice(Random.Shared.Next(1, 6));
-    int[,] f = new int[4, 4];
+    int n = shape.GetLength(0);
+    int m = shape.GetLength(1);
+    int[,] f = new int[n, m];
 
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
             f[i, j] = shape[i, j];
 
     return f;
@@ -95,9 +89,13 @@ void Figure(int x, int y)
     int k = 0,
         l = 0;
 
-    for (int i = x - 1; i <= x + 2; i++)
+    int n = mapping.GetLength(0);
+    int m = mapping.GetLength(1);
+
+
+    for (int i = x; i < x + n; i++)
     {
-        for (int j = y - 1; j <= y + 2; j++)
+        for (int j = y; j < y + m; j++)
         {
             Console.SetCursorPosition(20 + i, j);
             if (mapping[k, l] == 1) Console.Write("+");
@@ -113,7 +111,7 @@ void Figure(int x, int y)
 Console.CursorVisible = false;
 int x = 10;
 int y = 2;
-int gameOver = 17;
+int gameOver = 19 - mapping.GetLength(1);
 
 
 
@@ -132,6 +130,7 @@ new Thread(() =>
         {
             mapping = Copying();
             y = 1;
+            x = 10;
         }
     }
 }).Start();
@@ -143,12 +142,12 @@ while (true)
 
     if (key == ConsoleKey.LeftArrow)
     {
-        if (x > 2) x--;
+        if (x > 1) x--;
         Figure(x, y);
     }
     if (key == ConsoleKey.RightArrow)
     {
-        if (x < 16) x++;
+        if (x < 19 - mapping.GetLength(0)) x++;
         Figure(x, y);
     }
     // if (key == ConsoleKey.Spacebar)
