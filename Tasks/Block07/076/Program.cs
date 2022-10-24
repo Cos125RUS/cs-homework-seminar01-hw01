@@ -14,22 +14,15 @@
                 if (groups[j, k] > 0)
                 {
                     if (i % groups[j, k] == 0) k = n;
-                    // else
-                    // {
-                    //     // Полная проверка на взаимно простые числа
-                    //     if (CommonDivisor(i, groups[j, k]) > 1) k = n;
-                    // }
                 }
                 else
                 {
                     groups[j, k] = i;
-                    rows = j;
+                    if (rows < j) rows = j;
                     if (columns < k) columns = k;
                     j = n;
                     k = n;
                 }
-
-
             }
         }
     }
@@ -48,20 +41,6 @@ void PrintArray(int[,] arr, int rows, int columns)
         }
         Console.WriteLine();
     }
-}
-
-int CommonDivisor(int n1, int n2)
-{
-    int count = 1;
-    for (int i = 2; i < n2; i++)
-    {
-        if (n1 % i == 0 && n2 % i == 0)
-        {
-            count = i;
-            break;
-        }
-    }
-    return count;
 }
 
 
