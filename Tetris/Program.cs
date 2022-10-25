@@ -21,7 +21,7 @@ int[,] CreateField()
 
 // Инициализация поля
 int[,] field = CreateField();
-
+int[] lineCounter = new int[20];
 
 // Отрисовка поля
 void PrintField()
@@ -31,11 +31,15 @@ void PrintField()
         {
             Console.SetCursorPosition(20 + i, j);
             if (field[i, j] == 1) Console.Write('*');
+            Console.SetCursorPosition(13, j);
+            Console.Write(lineCounter[j]);
         }
+
+
 }
 
 
-// Запись выбранной фигуры
+// Первая запись выбранной фигуры
 (int[,] mapping, int row, int column) = Copying();
 
 
@@ -44,7 +48,12 @@ void ChangeField(int x, int y)
 {
     for (int i = 0; i < row; i++)
         for (int j = 0; j < column; j++)
-            if (mapping[i, j] == 1) field[x + i, j + y] = 1;
+            if (mapping[i, j] == 1)
+            {
+                field[x + i, j + y] = 1;
+                ++lineCounter[j + y];
+                if (lineCounter[j + y] == 18) Reduction(j + y);
+            }
 }
 
 
@@ -134,9 +143,24 @@ bool Drop(int x, int y)
 {
     for (int i = 0; i < row; i++)
         for (int j = 0; j < column; j++)
-            if (mapping[i, j] == 1 && field[x + i , j + y + 1] == 1) return true;
+            if (mapping[i, j] == 1 && field[x + i, j + y + 1] == 1) return true;
 
     return false;
+}
+
+
+// Сокращение линий
+void Reduction(int line)
+{
+    for (int i = line; i > 0; i--)
+    {
+        for (int j = 1; j < 19; j++)
+            field[j, i] = field[j, i - 1];
+        lineCounter[i] = lineCounter[i - 1];
+    }
+
+    for (int i = 1; i < 19; i++)
+        field[i, 1] = 0;
 }
 
 
@@ -158,8 +182,7 @@ new Thread(() =>
         Figure(x, y);
         Thread.Sleep(time);
         y++;
-        // if (y + column >= 19)
-        if (Drop(x,y))
+        if (Drop(x, y))
         {
             ChangeField(x, y);
             (mapping, row, column) = Copying();
