@@ -26,15 +26,29 @@ int[] lineCounter = new int[20];
 // Отрисовка поля
 void PrintField()
 {
-    for (int i = 0; i < 20; i++)
-        for (int j = 0; j < 20; j++)
+    for (int i = 1; i < 19; i++)
+        for (int j = 1; j < 19; j++)
         {
             Console.SetCursorPosition(20 + i, j);
-            if (field[i, j] == 1) Console.Write('*');
+            if (field[i, j] == 1) Console.Write(Convert.ToChar(4));
             Console.SetCursorPosition(13, j);
             Console.Write(lineCounter[j]);
         }
 
+    for (int i = 0; i < 20; i += 19)
+        for (int j = 1; j < 19; j++)
+        {
+            Console.SetCursorPosition(20 + i, j);
+            Console.Write(Convert.ToChar(19));
+        }
+
+    for (int i = 0; i < 20; i++)
+    {
+        Console.SetCursorPosition(20 + i, 0);
+        Console.Write(Convert.ToChar(22));
+        Console.SetCursorPosition(20 + i, 19);
+        Console.Write(Convert.ToChar(22));
+    }
 
 }
 
@@ -133,7 +147,7 @@ void Figure(int x, int y)
         for (int j = 0; j < column; j++)
         {
             Console.SetCursorPosition(20 + i + x, j + y);
-            if (mapping[i, j] == 1) Console.Write("*");
+            if (mapping[i, j] == 1) Console.Write(Convert.ToChar(4));
         }
 }
 
@@ -199,7 +213,7 @@ new Thread(() =>
 {
     while (true)
     {
-        while (time > 500) {}
+        while (time > 500) { }
 
         Console.Clear();
         Console.SetCursorPosition(20, 20);
