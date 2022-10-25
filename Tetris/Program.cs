@@ -164,6 +164,17 @@ void Reduction(int line)
 }
 
 
+// Проверка на врезаие в фигуры слева
+bool LeftTest(int x, int y, int direction)
+{
+    for (int i = 0; i < row; i++)
+        for (int j = 0; j < column; j++)
+            if (mapping[i, j] == 1 && field[x + i + 1 * direction, j + y] == 1) return true;
+
+    return false;
+}
+
+
 // Начальные параметры
 Console.CursorVisible = false;
 int x = 10;
@@ -201,13 +212,13 @@ while (true)
 
     if (key == ConsoleKey.LeftArrow)
     {
-        if (x > 1) x--;
+        if (x > 1 && !LeftTest(x, y, -1)) x--;
         Figure(x, y);
     }
 
     if (key == ConsoleKey.RightArrow)
     {
-        if (x < 19 - row) x++;
+        if (x < 19 - row && !LeftTest(x, y, 1)) x++;
         Figure(x, y);
     }
 
