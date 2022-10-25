@@ -1,33 +1,52 @@
+// Вид стартового поля
 int[,] CreateField()
 {
-    int[,] f = new int[20, 20];
+    int[,] f = new int[22, 20];
+
     for (int i = 0; i < 19; i++)
     {
         f[i, 0] = 1;
         f[i, 19] = 1;
     }
+
     for (int i = 0; i < 20; i++)
     {
-        f[19, i] = 1;
         f[0, i] = 1;
+        for (int j = 19; j < 22; j++)
+            f[j, i] = 1;
     }
 
     return f;
 }
 
+// Инициализация поля
 int[,] field = CreateField();
 
+
+// Отрисовка поля
 void PrintField()
 {
     for (int i = 0; i < 20; i++)
         for (int j = 0; j < 20; j++)
         {
             Console.SetCursorPosition(20 + i, j);
-            if (field[i, j] == 1) Console.Write('+');
+            if (field[i, j] == 1) Console.Write('*');
         }
 }
 
+
+// Запись выбранной фигуры
 (int[,] mapping, int row, int column) = Copying();
+
+
+// Изменения поля
+void ChangeField(int x, int y)
+{
+    for (int i = 0; i < row; i++)
+        for (int j = 0; j < column; j++)
+            if (mapping[i, j] == 1) field[x + i, j + y] = 1;
+}
+
 
 // Выбор следующей фигуры
 int[,] Choice(int n)
@@ -68,6 +87,7 @@ int[,] Choice(int n)
     }
 }
 
+
 // Создание следующей фигуры
 (int[,], int, int) Copying()
 {
@@ -83,6 +103,7 @@ int[,] Choice(int n)
     return (f, n, m);
 }
 
+
 // Поворот фигуры
 (int[,], int, int) Twist(int[,] arr, int n, int m)
 {
@@ -95,31 +116,34 @@ int[,] Choice(int n)
     return (revers, m, n);
 }
 
+
 // Движение фигуры
 void Figure(int x, int y)
 {
-    int k = 0,
-        l = 0;
-
-    for (int i = x; i < x + row; i++)
-    {
-        for (int j = y; j < y + column; j++)
+    for (int i = 0; i < row; i++)
+        for (int j = 0; j < column; j++)
         {
-            Console.SetCursorPosition(20 + i, j);
-            if (mapping[k, l] == 1) Console.Write("+");
-            l++;
+            Console.SetCursorPosition(20 + i + x, j + y);
+            if (mapping[i, j] == 1) Console.Write("*");
         }
-        l = 0;
-        k++;
-    }
 }
 
 
+// Проверка падения фигуры
+bool Drop(int x, int y)
+{
+    for (int i = 0; i < row; i++)
+        for (int j = 0; j < column; j++)
+            if (mapping[i, j] == 1 && field[x + i , j + y + 1] == 1) return true;
 
+    return false;
+}
+
+
+// Начальные параметры
 Console.CursorVisible = false;
 int x = 10;
 int y = 2;
-// int gameOver = 19 - (column + 1);
 int time = 500;
 
 
@@ -134,8 +158,10 @@ new Thread(() =>
         Figure(x, y);
         Thread.Sleep(time);
         y++;
-        if (y + column >= 19)
+        // if (y + column >= 19)
+        if (Drop(x,y))
         {
+            ChangeField(x, y);
             (mapping, row, column) = Copying();
             y = 1;
             x = 10;
@@ -143,6 +169,7 @@ new Thread(() =>
         }
     }
 }).Start();
+
 
 // Логика проверки нажатия кнопок
 while (true)
@@ -154,11 +181,13 @@ while (true)
         if (x > 1) x--;
         Figure(x, y);
     }
+
     if (key == ConsoleKey.RightArrow)
     {
         if (x < 19 - row) x++;
         Figure(x, y);
     }
+
     if (key == ConsoleKey.Spacebar)
     {
         (mapping, row, column) = Twist(mapping, row, column);
@@ -166,6 +195,7 @@ while (true)
         while (x < 1) x++;
         Figure(x, y);
     }
+
     if (key == ConsoleKey.DownArrow)
     {
         time = 100;
