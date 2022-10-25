@@ -27,7 +27,7 @@ void PrintField()
         }
 }
 
-int[,] mapping = Copying();
+(int[,] mapping, int row, int column) = Copying();
 
 // Выбор следующей фигуры
 int[,] Choice(int n)
@@ -69,7 +69,7 @@ int[,] Choice(int n)
 }
 
 // Создание следующей фигуры
-int[,] Copying()
+(int[,], int, int) Copying()
 {
     int[,] shape = Choice(Random.Shared.Next(1, 6));
     int n = shape.GetLength(0);
@@ -80,7 +80,19 @@ int[,] Copying()
         for (int j = 0; j < m; j++)
             f[i, j] = shape[i, j];
 
-    return f;
+    return (f, n, m);
+}
+
+// Поворот фигуры
+(int[,], int, int) Twist(int[,] arr, int n, int m)
+{
+    int[,] revers = new int[m, n];
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            revers[j, n - 1 - i] = arr[i, j];
+
+    return (revers, m, n);
 }
 
 // Движение фигуры
@@ -89,13 +101,9 @@ void Figure(int x, int y)
     int k = 0,
         l = 0;
 
-    int n = mapping.GetLength(0);
-    int m = mapping.GetLength(1);
-
-
-    for (int i = x; i < x + n; i++)
+    for (int i = x; i < x + row; i++)
     {
-        for (int j = y; j < y + m; j++)
+        for (int j = y; j < y + column; j++)
         {
             Console.SetCursorPosition(20 + i, j);
             if (mapping[k, l] == 1) Console.Write("+");
@@ -111,8 +119,8 @@ void Figure(int x, int y)
 Console.CursorVisible = false;
 int x = 10;
 int y = 2;
-int gameOver = 19 - mapping.GetLength(1);
-
+// int gameOver = 19 - (column + 1);
+int time = 500;
 
 
 // Логика отрисовки всего
@@ -124,13 +132,14 @@ new Thread(() =>
         Console.SetCursorPosition(20, 20);
         PrintField();
         Figure(x, y);
-        Thread.Sleep(500);
+        Thread.Sleep(time);
         y++;
-        if (y > gameOver)
+        if (y + column >= 19)
         {
-            mapping = Copying();
+            (mapping, row, column) = Copying();
             y = 1;
             x = 10;
+            time = 500;
         }
     }
 }).Start();
@@ -147,11 +156,19 @@ while (true)
     }
     if (key == ConsoleKey.RightArrow)
     {
-        if (x < 19 - mapping.GetLength(0)) x++;
+        if (x < 19 - row) x++;
         Figure(x, y);
     }
-    // if (key == ConsoleKey.Spacebar)
-    // {
-    //     // Figure(x++, y--);
-    // }
+    if (key == ConsoleKey.Spacebar)
+    {
+        (mapping, row, column) = Twist(mapping, row, column);
+        while (x > 19 - row) x--;
+        while (x < 1) x++;
+        Figure(x, y);
+    }
+    if (key == ConsoleKey.DownArrow)
+    {
+        time = 100;
+        Figure(x, y);
+    }
 }
