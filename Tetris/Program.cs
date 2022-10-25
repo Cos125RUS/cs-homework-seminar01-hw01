@@ -199,18 +199,23 @@ new Thread(() =>
 {
     while (true)
     {
+        while (time > 500) {}
+
         Console.Clear();
         Console.SetCursorPosition(20, 20);
         PrintField();
         Figure(x, y);
         Thread.Sleep(time);
+
         if (GameOver(x, y))
         {
-            Console.SetCursorPosition(25, 25);
+            Console.SetCursorPosition(25, 22);
             System.Console.WriteLine("GAME OVER!");
             break;
         }
+
         y++;
+
         if (Drop(x, y))
         {
             ChangeField(x, y);
@@ -252,5 +257,16 @@ while (true)
     {
         time = 100;
         Figure(x, y);
+    }
+
+    if (key == ConsoleKey.P)
+    {
+        if (time <= 500)
+        {
+            time = 99999999;
+            Console.SetCursorPosition(27, 22);
+            System.Console.WriteLine("PAUSE");
+        }
+        else time = 500;
     }
 }
