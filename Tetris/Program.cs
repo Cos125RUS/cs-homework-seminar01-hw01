@@ -175,6 +175,18 @@ bool LeftTest(int x, int y, int direction)
 }
 
 
+// Конец игры
+bool GameOver(int x, int y)
+{
+    for (int i = 0; i < row; i++)
+        for (int j = 0; j < column; j++)
+            if (mapping[i, j] == 1 && field[x + i, j + y + 1] == 1)
+                if (j - column <= 1) return true;
+
+    return false;
+}
+
+
 // Начальные параметры
 Console.CursorVisible = false;
 int x = 10;
@@ -192,6 +204,12 @@ new Thread(() =>
         PrintField();
         Figure(x, y);
         Thread.Sleep(time);
+        if (GameOver(x, y))
+        {
+            Console.SetCursorPosition(25, 25);
+            System.Console.WriteLine("GAME OVER!");
+            break;
+        }
         y++;
         if (Drop(x, y))
         {
