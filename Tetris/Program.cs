@@ -27,9 +27,12 @@ void PrintField(int[,] field, int horizontal, int vertical)
         for (int j = 0; j < horizontal; j++)
         {
             Console.SetCursorPosition(20 + i, j);
-            if (j == 0 || j == horizontal - 1) Console.Write(Convert.ToChar(22));
-            if ((i == 0 || i == vertical - 1) && j > 0 && j < horizontal - 1) Console.Write(Convert.ToChar(19));
-            if (field[i, j] == 1 && i > 0 && i < vertical - 1 && j > 0 && j < horizontal - 1) Console.Write(Convert.ToChar(4));
+            if (j == 0 || j == horizontal - 1)
+                Console.Write(Convert.ToChar(22));
+            if ((i == 0 || i == vertical - 1) && j > 0 && j < horizontal - 1)
+                Console.Write(Convert.ToChar(19));
+            if (field[i, j] == 1 && i > 0 && i < vertical - 1 && j > 0 && j < horizontal - 1)
+                Console.Write(Convert.ToChar(4));
         }
 }
 
@@ -37,14 +40,14 @@ void PrintField(int[,] field, int horizontal, int vertical)
 // Рисунок следующей фигуры
 void PrintNextFigure(int[,] nextMapping, int nextRow, int nextColumn, int vertical)
 {
-    Console.SetCursorPosition(24 + vertical, 3);
+    Console.SetCursorPosition(24 + vertical, 2);
     Console.Write("Next Figure:");
 
     for (int i = 0; i < nextRow; i++)
     {
         for (int j = 0; j < nextColumn; j++)
         {
-            Console.SetCursorPosition(27 + vertical + i, 5 + j);
+            Console.SetCursorPosition(28 + vertical + i, 4 + j);
             if (nextMapping[i, j] == 1) Console.Write(Convert.ToChar(4));
         }
     }
@@ -52,16 +55,33 @@ void PrintNextFigure(int[,] nextMapping, int nextRow, int nextColumn, int vertic
 
 
 // Изменения поля
-void ChangeField(int x, int y, int[] lineCounter, int[,] field, int[,] mapping, int row, int column, int horizontal, int vertical)
+int ChangeField(int x, int y, int[] lineCounter, int[,] field,
+                int[,] mapping, int row, int column,
+                int horizontal, int vertical)
 {
+    int count = 0;
+
     for (int i = 0; i < row; i++)
         for (int j = 0; j < column; j++)
             if (mapping[i, j] == 1)
             {
                 field[x + i, j + y - 1] = 1;
                 ++lineCounter[j + y];
-                if (lineCounter[j + y] == vertical - 2) Reduction(j + y, field, lineCounter, vertical);
+                if (lineCounter[j + y] == vertical - 2)
+                {
+                    count++;
+                    Reduction(j + y, field, lineCounter, vertical);
+                }
             }
+
+    switch (count)
+    {
+        case 1: return 100;
+        case 2: return 250;
+        case 3: return 450;
+        case 4: return 600;
+        default: return 0;
+    }
 }
 
 
@@ -185,7 +205,17 @@ void Reduction(int line, int[,] field, int[] lineCounter, int vertical)
 }
 
 
-// Проверка на врезаие в фигуры слева
+// Вывод подсчёта очков
+void PrintPoints(int points, int vertical, int horizontal)
+{
+    Console.SetCursorPosition(26 + vertical, horizontal - 5);
+    Console.Write("Points:");
+    Console.SetCursorPosition(26 + vertical, horizontal - 3);
+    Console.Write(points);
+}
+
+
+// Проверка на врезаия в фигуры
 bool SideTest(int x, int y, int direction, int[,] field, int[,] mapping, int row, int column)
 {
     for (int i = 0; i < row; i++)
@@ -213,6 +243,7 @@ Console.CursorVisible = false;
 int x = vertical / 2 - 1;
 int y = 0;
 int time = 500;
+int points = 0;
 
 // Логика отрисовки всего
 new Thread(() =>
@@ -225,6 +256,7 @@ new Thread(() =>
         Console.SetCursorPosition(20, vertical);
         PrintField(field, horizontal, vertical);
         PrintNextFigure(nextMapping, nextRow, nextColumn, vertical);
+        PrintPoints(points, vertical, horizontal);
         Figure(x, y, mapping, row, column);
         Thread.Sleep(time);
 
@@ -239,7 +271,7 @@ new Thread(() =>
 
         if (Drop(x, y, field, mapping, row, column))
         {
-            ChangeField(x, y, lineCounter, field, mapping, row, column, horizontal, vertical);
+            points += ChangeField(x, y, lineCounter, field, mapping, row, column, horizontal, vertical);
             (mapping, row, column) = Copying(nextMapping, nextRow, nextColumn);
             (nextMapping, nextRow, nextColumn) = NewFigure();
             y = 0;
@@ -263,14 +295,14 @@ while (true)
 
     if (key == ConsoleKey.RightArrow)
     {
-        if (x < horizontal - 1 - row && !SideTest(x, y, 1, field, mapping, row, column)) x++;
+        if (x < vertical - 1 - row && !SideTest(x, y, 1, field, mapping, row, column)) x++;
         Figure(x, y, mapping, row, column);
     }
 
     if (key == ConsoleKey.Spacebar)
     {
         (mapping, row, column) = Twist(mapping, row, column);
-        while (x > horizontal - 1 - row) x--;
+        while (x > vertical - 1 - row) x--;
         while (x < 1) x++;
         Figure(x, y, mapping, row, column);
     }
