@@ -34,6 +34,23 @@ void PrintField(int[,] field, int horizontal, int vertical)
 }
 
 
+// Рисунок следующей фигуры
+void PrintNextFigure(int[,] nextMapping, int nextRow, int nextColumn, int vertical)
+{
+    Console.SetCursorPosition(24 + vertical, 3);
+    Console.Write("Next Figure:");
+
+    for (int i = 0; i < nextRow; i++)
+    {
+        for (int j = 0; j < nextColumn; j++)
+        {
+            Console.SetCursorPosition(27 + vertical + i, 5 + j);
+            if (nextMapping[i, j] == 1) Console.Write(Convert.ToChar(4));
+        }
+    }
+}
+
+
 // Изменения поля
 void ChangeField(int x, int y, int[] lineCounter, int[,] field, int[,] mapping, int row, int column, int horizontal, int vertical)
 {
@@ -48,7 +65,7 @@ void ChangeField(int x, int y, int[] lineCounter, int[,] field, int[,] mapping, 
 }
 
 
-// Выбор следующей фигуры
+// Выбор фигуры
 int[,] Choice(int n)
 {
     int[,] shape1 = {{0,1},
@@ -89,11 +106,19 @@ int[,] Choice(int n)
 
 
 // Создание следующей фигуры
-(int[,], int, int) Copying()
+(int[,], int, int) NewFigure()
 {
     int[,] shape = Choice(Random.Shared.Next(1, 6));
     int n = shape.GetLength(0);
     int m = shape.GetLength(1);
+
+    return (shape, n, m);
+}
+
+
+// Копирование фигуры
+(int[,], int, int) Copying(int[,] shape, int n, int m)
+{
     int[,] f = new int[n, m];
 
     for (int i = 0; i < n; i++)
@@ -172,19 +197,20 @@ bool SideTest(int x, int y, int direction, int[,] field, int[,] mapping, int row
 
 
 // Параметры поля
-int horizontal = 20;
-int vertical = 15;
+int horizontal = 22;
+int vertical = 18;
 
 // Инициализация поля
 int[,] field = CreateField(horizontal, vertical);
 int[] lineCounter = new int[horizontal];
 
-// Первая запись выбранной фигуры
-(int[,] mapping, int row, int column) = Copying();
+// Первая запись фигур
+(int[,] mapping, int row, int column) = NewFigure();
+(int[,] nextMapping, int nextRow, int nextColumn) = NewFigure();
 
 // Начальные параметры
 Console.CursorVisible = false;
-int x = vertical / 2;
+int x = vertical / 2 - 1;
 int y = 0;
 int time = 500;
 
@@ -198,13 +224,14 @@ new Thread(() =>
         Console.Clear();
         Console.SetCursorPosition(20, vertical);
         PrintField(field, horizontal, vertical);
+        PrintNextFigure(nextMapping, nextRow, nextColumn, vertical);
         Figure(x, y, mapping, row, column);
         Thread.Sleep(time);
 
         if (gameOver)
         {
-            Console.SetCursorPosition(20 + vertical / 2 / 2, horizontal + 2);
-            System.Console.WriteLine("GAME OVER!");
+            Console.SetCursorPosition(19 + vertical / 4, horizontal + 2);
+            Console.Write("GAME OVER!");
             break;
         }
 
@@ -213,9 +240,10 @@ new Thread(() =>
         if (Drop(x, y, field, mapping, row, column))
         {
             ChangeField(x, y, lineCounter, field, mapping, row, column, horizontal, vertical);
-            (mapping, row, column) = Copying();
+            (mapping, row, column) = Copying(nextMapping, nextRow, nextColumn);
+            (nextMapping, nextRow, nextColumn) = NewFigure();
             y = 0;
-            x = vertical / 2;
+            x = vertical / 2 - 1;
             time = 500;
         }
     }
@@ -258,7 +286,7 @@ while (true)
         if (time <= 500)
         {
             time = 99999999;
-            Console.SetCursorPosition(27, horizontal + 2);
+            Console.SetCursorPosition(22 + vertical / 4, horizontal + 2);
             System.Console.WriteLine("PAUSE");
         }
         else time = 500;
