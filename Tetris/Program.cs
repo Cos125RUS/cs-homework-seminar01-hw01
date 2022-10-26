@@ -3,15 +3,11 @@ int[,] CreateField()
 {
     int[,] f = new int[22, 20];
 
-    for (int i = 0; i < 19; i++)
-    {
-        f[i, 0] = 1;
-        f[i, 19] = 1;
-    }
-
     for (int i = 0; i < 20; i++)
     {
+        f[i, 0] = 1;
         f[0, i] = 1;
+        f[i, 19] = 1;
         for (int j = 19; j < 22; j++)
             f[j, i] = 1;
     }
@@ -19,12 +15,9 @@ int[,] CreateField()
     return f;
 }
 
-// Инициализация поля
-int[,] field = CreateField();
-int[] lineCounter = new int[20];
 
 // Отрисовка поля
-void PrintField()
+void PrintField(int[,] field)
 {
     for (int i = 0; i < 20; i++)
         for (int j = 0; j < 20; j++)
@@ -37,20 +30,16 @@ void PrintField()
 }
 
 
-// Первая запись выбранной фигуры
-(int[,] mapping, int row, int column) = Copying();
-
-
 // Изменения поля
-void ChangeField(int x, int y)
+void ChangeField(int x, int y, int[] lineCounter, int[,] field, int [,] mapping, int row, int column)
 {
     for (int i = 0; i < row; i++)
         for (int j = 0; j < column; j++)
             if (mapping[i, j] == 1)
             {
-                field[x + i, j + y] = 1;
+                field[x + i, j + y - 1] = 1;
                 ++lineCounter[j + y];
-                if (lineCounter[j + y] == 18) Reduction(j + y);
+                if (lineCounter[j + y] == 18) Reduction(j + y, field, lineCounter);
             }
 }
 
@@ -125,7 +114,7 @@ int[,] Choice(int n)
 
 
 // Движение фигуры
-void Figure(int x, int y)
+void Figure(int x, int y, int [,] mapping, int row, int column)
 {
     for (int i = 0; i < row; i++)
         for (int j = 0; j < column; j++)
@@ -137,12 +126,11 @@ void Figure(int x, int y)
 
 
 // Проверка падения фигуры
-bool gameOver = false; // Переменная проверки проигрыша
-bool Drop(int x, int y)
+bool Drop(int x, int y, int[,] field, int [,] mapping, int row, int column, bool gameOver)
 {
     for (int i = 0; i < row; i++)
         for (int j = 0; j < column; j++)
-            if (mapping[i, j] == 1 && field[x + i, j + y + 1] == 1)
+            if (mapping[i, j] == 1 && field[x + i, j + y] == 1)
             {
                 if (y - column < 1) gameOver = true; // Проверка проигрыша
                 return true;
@@ -153,7 +141,7 @@ bool Drop(int x, int y)
 
 
 // Сокращение линий
-void Reduction(int line)
+void Reduction(int line, int[,] field, int[] lineCounter)
 {
     for (int i = line; i > 0; i--)
     {
@@ -168,7 +156,7 @@ void Reduction(int line)
 
 
 // Проверка на врезаие в фигуры слева
-bool LeftTest(int x, int y, int direction)
+bool SideTest(int x, int y, int direction, int[,] field, int [,] mapping, int row, int column)
 {
     for (int i = 0; i < row; i++)
         for (int j = 0; j < column; j++)
@@ -178,12 +166,19 @@ bool LeftTest(int x, int y, int direction)
 }
 
 
+// Инициализация поля
+int[,] field = CreateField();
+int[] lineCounter = new int[20];
+
+// Первая запись выбранной фигуры
+(int[,] mapping, int row, int column) = Copying();
+
 // Начальные параметры
 Console.CursorVisible = false;
 int x = 10;
 int y = 2;
 int time = 500;
-
+bool gameOver = false;
 
 // Логика отрисовки всего
 new Thread(() =>
@@ -194,8 +189,8 @@ new Thread(() =>
 
         Console.Clear();
         Console.SetCursorPosition(20, 20);
-        PrintField();
-        Figure(x, y);
+        PrintField(field);
+        Figure(x, y, mapping, row, column);
         Thread.Sleep(time);
 
         if (gameOver)
@@ -207,9 +202,9 @@ new Thread(() =>
 
         y++;
 
-        if (Drop(x, y))
+        if (Drop(x, y, field, mapping, row, column, gameOver))
         {
-            ChangeField(x, y);
+            ChangeField(x, y, lineCounter, field, mapping, row, column);
             (mapping, row, column) = Copying();
             y = 1;
             x = 10;
@@ -226,14 +221,14 @@ while (true)
 
     if (key == ConsoleKey.LeftArrow)
     {
-        if (x > 1 && !LeftTest(x, y, -1)) x--;
-        Figure(x, y);
+        if (x > 1 && !SideTest(x, y, -1, field, mapping, row, column)) x--;
+        Figure(x, y, mapping, row, column);
     }
 
     if (key == ConsoleKey.RightArrow)
     {
-        if (x < 19 - row && !LeftTest(x, y, 1)) x++;
-        Figure(x, y);
+        if (x < 19 - row && !SideTest(x, y, 1, field, mapping, row, column)) x++;
+        Figure(x, y, mapping, row, column);
     }
 
     if (key == ConsoleKey.Spacebar)
@@ -241,13 +236,13 @@ while (true)
         (mapping, row, column) = Twist(mapping, row, column);
         while (x > 19 - row) x--;
         while (x < 1) x++;
-        Figure(x, y);
+        Figure(x, y, mapping, row, column);
     }
 
     if (key == ConsoleKey.DownArrow)
     {
         time = 100;
-        Figure(x, y);
+        Figure(x, y, mapping, row, column);
     }
 
     if (key == ConsoleKey.P)
