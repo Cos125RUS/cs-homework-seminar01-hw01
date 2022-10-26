@@ -206,20 +206,53 @@ void Reduction(int line, int[,] field, int[] lineCounter, int vertical)
 
 
 // Вывод подсчёта очков
-void PrintPoints(int points, int vertical, int horizontal)
+void PrintPoints(int points, int level, int vertical, int horizontal)
 {
     Console.SetCursorPosition(26 + vertical, horizontal - 5);
     Console.Write("Points:");
-    Console.SetCursorPosition(26 + vertical, horizontal - 3);
+    Console.SetCursorPosition(27 + vertical, horizontal - 3);
     Console.Write(points);
+    Console.SetCursorPosition(26 + vertical, horizontal - 8);
+    Console.Write("level " + level);
 }
 
 
 // Уровни
-// int Levels()
+(int, int) LevelsUp(int points)
+{
+    int level = 1;
+    int time = 500;
+
+    if (points >= 2000 && points < 5000)
+    {
+        level = 2;
+        time = 450;
+    }
+    if (points >= 5000 && points < 8000)
+    {
+        level = 3;
+        time = 400;
+    }
+    if (points >= 8000 && points < 12000)
+    {
+        level = 4;
+        time = 300;
+    }
+    if (points >= 12000 && points < 20000)
+    {
+        level = 5;
+        time = 200;
+    }
+    if (points >= 20000)
+    {
+        level = 6;
+        time = 100;
+    }
+    return (level, time);
+}
 
 
-// Проверка на врезаия в фигуры сбоку
+// Проверка на слепливание фигур
 bool SideTest(int x, int y, int direction, int orientation, int[,] field, int[,] mapping, int row, int column)
 {
     for (int i = 0; i < row; i++)
@@ -233,15 +266,11 @@ bool SideTest(int x, int y, int direction, int orientation, int[,] field, int[,]
 // Запрос рестарта
 bool RequestRestart(int[,] field, int horizontal, int vertical)
 {
-    for (int i = horizontal / 4; i < horizontal / 2; i++)
-        for (int j = vertical / 4; j < vertical - vertical / 4; j++)
-            field[i, j] = 0;
-
-    PrintField(field, horizontal, vertical);
-
-    Console.SetCursorPosition(21 + vertical / 4, horizontal / 4 + 1);
+    Console.SetCursorPosition(19 + vertical / 4, horizontal + 2);
+    Console.Write("GAME OVER!");
+    Console.SetCursorPosition(19 + vertical / 4, horizontal + 4);
     Console.Write("Try again?");
-    Console.SetCursorPosition(23 + vertical / 4, horizontal / 4 + 2);
+    Console.SetCursorPosition(21 + vertical / 4, horizontal + 5);
     Console.Write("(y/n)");
 
     var key = Console.ReadKey(true).Key;
@@ -285,6 +314,7 @@ int x = vertical / 2 - 1;
 int y = 0;
 int time = 500;
 int points = 0;
+int level = 1;
 
 // Логика отрисовки всего
 new Thread(() =>
@@ -297,15 +327,12 @@ new Thread(() =>
         Console.SetCursorPosition(20, vertical);
         PrintField(field, horizontal, vertical);
         PrintNextFigure(nextMapping, nextRow, nextColumn, vertical);
-        PrintPoints(points, vertical, horizontal);
+        PrintPoints(points, level, vertical, horizontal);
         Figure(x, y, mapping, row, column);
         Thread.Sleep(time);
 
         if (gameOver)
         {
-            Console.SetCursorPosition(19 + vertical / 4, horizontal + 2);
-            Console.Write("GAME OVER!");
-            // break;
             time = 99999999;
             if (RequestRestart(field, horizontal, vertical))
                 (field, lineCounter, points, time, gameOver) =
@@ -320,9 +347,9 @@ new Thread(() =>
             points += ChangeField(x, y, lineCounter, field, mapping, row, column, horizontal, vertical);
             (mapping, row, column) = Copying(nextMapping, nextRow, nextColumn);
             (nextMapping, nextRow, nextColumn) = NewFigure();
+            (level, time) = LevelsUp(points);
             y = 0;
             x = vertical / 2 - 1;
-            time = 500;
         }
     }
 }).Start();
@@ -332,7 +359,7 @@ new Thread(() =>
 while (true)
 {
     var key = Console.ReadKey(true).Key;
-    
+
     if (key == ConsoleKey.LeftArrow)
     {
         if (x > 1 && !SideTest(x, y, -1, 0, field, mapping, row, column)) x--;
@@ -377,6 +404,6 @@ while (true)
             Console.SetCursorPosition(22 + vertical / 4, horizontal + 2);
             System.Console.WriteLine("PAUSE");
         }
-        else time = 500;
+        else (level, time) = LevelsUp(points);
     }
 }
