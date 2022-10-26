@@ -26,30 +26,14 @@ int[] lineCounter = new int[20];
 // Отрисовка поля
 void PrintField()
 {
-    for (int i = 1; i < 19; i++)
-        for (int j = 1; j < 19; j++)
-        {
-            Console.SetCursorPosition(20 + i, j);
-            if (field[i, j] == 1) Console.Write(Convert.ToChar(4));
-            Console.SetCursorPosition(13, j);
-            Console.Write(lineCounter[j]);
-        }
-
-    for (int i = 0; i < 20; i += 19)
-        for (int j = 1; j < 19; j++)
-        {
-            Console.SetCursorPosition(20 + i, j);
-            Console.Write(Convert.ToChar(19));
-        }
-
     for (int i = 0; i < 20; i++)
-    {
-        Console.SetCursorPosition(20 + i, 0);
-        Console.Write(Convert.ToChar(22));
-        Console.SetCursorPosition(20 + i, 19);
-        Console.Write(Convert.ToChar(22));
-    }
-
+        for (int j = 0; j < 20; j++)
+        {
+            Console.SetCursorPosition(20 + i, j);
+            if (j == 0 || j == 19) Console.Write(Convert.ToChar(22));
+            if ((i == 0 || i == 19) && j > 0 && j < 19) Console.Write(Convert.ToChar(19));
+            if (field[i, j] == 1 && i > 0 && i < 19 && j > 0 && j < 19) Console.Write(Convert.ToChar(4));
+        }
 }
 
 
@@ -153,11 +137,16 @@ void Figure(int x, int y)
 
 
 // Проверка падения фигуры
+bool gameOver = false; // Переменная проверки проигрыша
 bool Drop(int x, int y)
 {
     for (int i = 0; i < row; i++)
         for (int j = 0; j < column; j++)
-            if (mapping[i, j] == 1 && field[x + i, j + y + 1] == 1) return true;
+            if (mapping[i, j] == 1 && field[x + i, j + y + 1] == 1)
+            {
+                if (y - column < 1) gameOver = true; // Проверка проигрыша
+                return true;
+            }
 
     return false;
 }
@@ -183,19 +172,7 @@ bool LeftTest(int x, int y, int direction)
 {
     for (int i = 0; i < row; i++)
         for (int j = 0; j < column; j++)
-            if (mapping[i, j] == 1 && field[x + i + 1 * direction, j + y] == 1) return true;
-
-    return false;
-}
-
-
-// Конец игры
-bool GameOver(int x, int y)
-{
-    for (int i = 0; i < row; i++)
-        for (int j = 0; j < column; j++)
-            if (mapping[i, j] == 1 && field[x + i, j + y + 1] == 1)
-                if (j - column <= 1) return true;
+            if (mapping[i, j] == 1 && field[x + i + direction, j + y] == 1) return true;
 
     return false;
 }
@@ -221,7 +198,7 @@ new Thread(() =>
         Figure(x, y);
         Thread.Sleep(time);
 
-        if (GameOver(x, y))
+        if (gameOver)
         {
             Console.SetCursorPosition(25, 22);
             System.Console.WriteLine("GAME OVER!");
