@@ -276,14 +276,14 @@ bool RequestRestart(int[,] field, int horizontal, int vertical)
     var key = Console.ReadKey(true).Key;
 
     if (key == ConsoleKey.Y) return true;
-    else return RequestRestart(field, horizontal, vertical);
     if (key == ConsoleKey.N) return false;
     else return RequestRestart(field, horizontal, vertical);
 }
 
 
 // Рестарт
-(int[,], int[], int, int, bool) Restart(int[,] field, int horizontal, int vertical, int[] lineCounter, int points, int time, bool gameOver)
+(int[,], int[], int, int, bool) Restart(int[,] field, int horizontal, int vertical, 
+                                        int[] lineCounter, int points, int time, bool gameOver)
 {
     field = CreateField(horizontal, vertical);
     for (int i = 1; i < horizontal; i++)
@@ -297,8 +297,8 @@ bool RequestRestart(int[,] field, int horizontal, int vertical)
 
 
 // Параметры поля
-int horizontal = 22;
-int vertical = 18;
+const int horizontal = 22;
+const int vertical = 18;
 
 // Инициализация поля
 int[,] field = CreateField(horizontal, vertical);
