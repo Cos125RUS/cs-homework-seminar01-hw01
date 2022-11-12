@@ -26,7 +26,7 @@ void Print3DArray(int[,,] arr)
         {
             for (int k = 0; k < h; k++)
             {
-                Console.WriteLine($"({i}:{j}:{k}) - {arr[i, j, k]}   ");
+                Console.Write($"({i}:{j}:{k}) - {arr[i, j, k]}   ");
             }
             Console.WriteLine();
         }
